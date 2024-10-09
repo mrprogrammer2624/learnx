@@ -1,0 +1,1 @@
+export { Dashboard as Teacher } from "./Dashboard/";

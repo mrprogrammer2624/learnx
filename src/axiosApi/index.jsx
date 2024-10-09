@@ -1,7 +1,7 @@
 import axios from "axios";
 import toast from "react-hot-toast";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL; // Access environment variable in Vite
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const axiosApi = axios.create({
   baseURL: backendUrl,
@@ -12,7 +12,7 @@ const setAuthHeader = (name) => {
   return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
 };
 
-// Check if we are in the browser environment
+/* Check if we are in the browser environment */
 if (typeof window !== "undefined") {
   const token = window.localStorage.getItem("_token");
   if (token) {
@@ -20,26 +20,31 @@ if (typeof window !== "undefined") {
   }
 }
 
-// Setting up interceptors
+/* Setting up interceptors */
 axiosApi.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error?.response?.status === 404) {
-      console.log(" ERROR => 404 => API not available");
-      toast.error(error.response.data.message);
-    } else if (error?.response?.status === 500) {
-      console.log(" ERROR => 500 => Server Error");
-      toast.error(error.response.data.message);
-    } else if (error?.response?.status === 401) {
-      toast.error(error.response.data.message);
-      console.log(" ERROR => 401 => User is not authorized");
-      if (localStorage.getItem("_token")) {
-        window.location.href = "/";
-      }
-    } else {
-      toast.error("/other-errors.");
+    const { response } = error;
+    switch (response?.status) {
+      case 400:
+        toast.error(response.data.message || "Bad Request");
+        break;
+      case 401:
+        toast.error(response.data.message || "Unauthorized");
+        localStorage.removeItem("_token");
+        window.location.href = "/login";
+        break;
+      case 404:
+        console.error("API not found");
+        toast.error(response.data.message || "Resource not found");
+        break;
+      case 500:
+        console.error("Server Error");
+        toast.error("An unexpected error occurred. Please try again later.");
+        break;
+      default:
+        toast.error(response?.data?.message || "An unexpected error occurred");
     }
-
     return Promise.reject(error);
   }
 );

@@ -1,2 +1,2 @@
 export * from "./useMediaQuery";
-export * from "./useExpensesTable.js"
+export * from "./aside.js";

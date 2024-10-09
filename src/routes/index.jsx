@@ -1,11 +1,10 @@
 import {
-  AdminLayout,
-  AuthLayout,
-  StudentLayout,
-  TeacherLayout,
-  WebLayout,
-} from "@/Layout";
-import { Home, Login } from "@/pages";
+  AdminAsideMenu,
+  TeacherAsideMenu,
+  StudentAsideMenu,
+} from "@/constants";
+import { AuthLayout, DashboardLayout, WebLayout } from "@/Layout";
+import { Admin, Home, Login, ManageUsers, Student, Teacher } from "@/pages";
 import { createBrowserRouter } from "react-router-dom";
 // import PrivateRoute from "./PrivateRoute";
 
@@ -36,33 +35,37 @@ const LearnXRoute = createBrowserRouter(
         {
           path: "/admin",
           // element: <PrivateRoute role="admin" ><AdminLayout /></PrivateRoute>,
-          element: <AdminLayout />,
+          element: <DashboardLayout items={AdminAsideMenu} />,
           children: [
             {
               index: true,
-              element: <Home />,
+              element: <Admin />,
+            },
+            {
+              path: "manage-users",
+              element: <ManageUsers />,
             },
           ],
         },
         {
           path: "/teacher",
           // element: <PrivateRoute role="admin" ><TeacherLayout /></PrivateRoute>,
-          element: <TeacherLayout />,
+          element: <DashboardLayout items={TeacherAsideMenu} />,
           children: [
             {
               index: true,
-              element: <Home />,
+              element: <Teacher />,
             },
           ],
         },
         {
           path: "/student",
           // element: <PrivateRoute role="admin" ><StudentLayout /></PrivateRoute>,
-          element: <StudentLayout />,
+          element: <DashboardLayout items={StudentAsideMenu} />,
           children: [
             {
               index: true,
-              element: <Home />,
+              element: <Student />,
             },
           ],
         },
